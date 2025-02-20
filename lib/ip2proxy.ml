@@ -32,12 +32,13 @@ module Database = struct
     asys : string;
     last_seen : int;
     threat : string;
-    provider : string
+    provider : string;
+    fraud_score : string
   }
 
   exception Ip2proxy_exception of string
 
-  let get_api_version = "3.0.0"
+  let get_api_version = "3.1.0"
 
   let load_mesg mesg =
     {
@@ -54,7 +55,8 @@ module Database = struct
     asys = mesg;
     last_seen = 0;
     threat = mesg;
-    provider = mesg
+    provider = mesg;
+    fraud_score = mesg
     }
 
   let get_bytes inc pos len =
@@ -218,18 +220,19 @@ module Database = struct
   let close_db meta = close_in_noerr meta.fs
 
   let read_record meta row db_type =
-    let country_position = [|0; 2; 3; 3; 3; 3; 3; 3; 3; 3; 3; 3|] in
-    let region_position = [|0; 0; 0; 4; 4; 4; 4; 4; 4; 4; 4; 4|] in
-    let city_position = [|0; 0; 0; 5; 5; 5; 5; 5; 5; 5; 5; 5|] in
-    let isp_position = [|0; 0; 0; 0; 6; 6; 6; 6; 6; 6; 6; 6|] in
-    let proxy_type_position = [|0; 0; 2; 2; 2; 2; 2; 2; 2; 2; 2; 2|] in
-    let domain_position = [|0; 0; 0; 0; 0; 7; 7; 7; 7; 7; 7; 7|] in
-    let usage_type_position = [|0; 0; 0; 0; 0; 0; 8; 8; 8; 8; 8; 8|] in
-    let asn_position = [|0; 0; 0; 0; 0; 0; 0; 9; 9; 9; 9; 9|] in
-    let asys_position = [|0; 0; 0; 0; 0; 0; 0; 10; 10; 10; 10; 10|] in
-    let last_seen_position = [|0; 0; 0; 0; 0; 0; 0; 0; 11; 11; 11; 11|] in
-    let threat_position = [|0; 0; 0; 0; 0; 0; 0; 0; 0; 12; 12; 12|] in
-    let provider_position = [|0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 13|] in
+    let country_position = [|0; 2; 3; 3; 3; 3; 3; 3; 3; 3; 3; 3; 3|] in
+    let region_position = [|0; 0; 0; 4; 4; 4; 4; 4; 4; 4; 4; 4; 4|] in
+    let city_position = [|0; 0; 0; 5; 5; 5; 5; 5; 5; 5; 5; 5; 5|] in
+    let isp_position = [|0; 0; 0; 0; 6; 6; 6; 6; 6; 6; 6; 6; 6|] in
+    let proxy_type_position = [|0; 0; 2; 2; 2; 2; 2; 2; 2; 2; 2; 2; 2|] in
+    let domain_position = [|0; 0; 0; 0; 0; 7; 7; 7; 7; 7; 7; 7; 7|] in
+    let usage_type_position = [|0; 0; 0; 0; 0; 0; 8; 8; 8; 8; 8; 8; 8|] in
+    let asn_position = [|0; 0; 0; 0; 0; 0; 0; 9; 9; 9; 9; 9; 9|] in
+    let asys_position = [|0; 0; 0; 0; 0; 0; 0; 10; 10; 10; 10; 10; 10|] in
+    let last_seen_position = [|0; 0; 0; 0; 0; 0; 0; 0; 11; 11; 11; 11; 11|] in
+    let threat_position = [|0; 0; 0; 0; 0; 0; 0; 0; 0; 12; 12; 12; 12|] in
+    let provider_position = [|0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 13; 13|] in
+    let fraud_score_position = [|0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 14|] in
     
     let country_short, country_long = read_col_country_row meta row db_type country_position in
     let region = read_col_string_row meta row db_type region_position in
@@ -243,6 +246,7 @@ module Database = struct
     let last_seen = read_col_int_row row db_type last_seen_position in
     let threat = read_col_string_row meta row db_type threat_position in
     let provider = read_col_string_row meta row db_type provider_position in
+    let fraud_score = read_col_string_row meta row db_type fraud_score_position in
     let is_proxy = if (country_short == "-" || proxy_type == "-") then 0 else if (proxy_type == "DCH" || proxy_type == "SES") then 2 else 1 in
     {
       country_short = country_short;
@@ -258,7 +262,8 @@ module Database = struct
       asys = asys;
       last_seen = last_seen;
       threat = threat;
-      provider = provider
+      provider = provider;
+      fraud_score = fraud_score
     }
   
   let rec search_tree meta ip_num db_type low high base_addr col_size ip_type =

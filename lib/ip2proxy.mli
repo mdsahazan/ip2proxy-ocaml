@@ -31,6 +31,7 @@ module Database :
       last_seen : int;
       threat : string;
       provider : string;
+      fraud_score : string;
     }
     exception Ip2proxy_exception of string
     val get_api_version : string

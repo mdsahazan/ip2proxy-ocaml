@@ -1,10 +1,10 @@
 (* open Printf *)
 (* open Ip2proxy *)
 
-(* query IP2Proxy BIN datababase *)
-(* let meta = Database.open_db "./IP2PROXY-LITE-PX1.BIN";; *)
+(* (* query IP2Proxy BIN datababase *) *)
+(* (* let meta = Database.open_db "./IP2PROXY-LITE-PX1.BIN";; *) *)
 
-(* let mylist = ["85.214.107.177"; "103.153.135.58"];; *)
+(* let mylist = ["3.91.171.8"; "37.252.228.50"; "197.85.191.64"];; *)
 
 (* let getprox ip = *)
 	(* let res = Database.query meta ip in *)
@@ -23,6 +23,7 @@
 	(* printf "last_seen: %d\n" res.last_seen; *)
 	(* printf "threat: %s\n" res.threat; *)
 	(* printf "provider: %s\n" res.provider; *)
+	(* printf "fraud_score: %s\n" res.fraud_score; *)
 	(* printf "=======================================================================\n";; *)
 
 

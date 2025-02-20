@@ -52,6 +52,7 @@ printf "as: %s\n" res.asys;;
 printf "last_seen: %d\n" res.last_seen;;
 printf "threat: %s\n" res.threat;;
 printf "provider: %s\n" res.provider;;
+printf "fraud_score: %s\n" res.fraud_score;;
 
 Database.close_db meta;;
 
